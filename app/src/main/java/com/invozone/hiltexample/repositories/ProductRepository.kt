@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.invozone.hiltexample.db.MyDb
+import com.invozone.hiltexample.errorhandling.Response
 import com.invozone.hiltexample.models.Product
 import com.invozone.hiltexample.models.ProductList
 
@@ -15,8 +16,8 @@ class ProductRepository @Inject constructor(private val myApi: MyApi, private va
     companion object{
         const val TAG = "RETROFIT"
     }
-    private val _products = MutableLiveData<List<Product>>()
-    val products: LiveData<List<Product>>
+    private val _products = MutableLiveData<Response<ProductList>>()
+    val products: LiveData<Response<ProductList>>
     get() = _products
 
     // get single product from database
@@ -29,7 +30,9 @@ class ProductRepository @Inject constructor(private val myApi: MyApi, private va
        val result = myApi.getProducts()
         if(result.isSuccessful && result.body() != null) {
             myDb.getDao().addProducts(result.body()!!.products)
-            _products.postValue(result.body()!!.products)
+            _products.postValue(Response.Success(result.body()))
+        }else{
+            _products.postValue(Response.Error(result.message()))
         }
     }
 
