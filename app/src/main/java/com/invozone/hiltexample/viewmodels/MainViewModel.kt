@@ -17,17 +17,17 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: ProductRepository) : ViewModel() {
 
-     val productLiveData : LiveData<Response<QuoteList>>
-     get() = repository.quotes
 
-     init {
-         viewModelScope.launch {
-             repository.getQuotes()
-             Log.d("Log", "Fetching data")
-         }
+    val quotes = repository.getQuotes()
 
-
-
-
-     }
+//     init {
+//         viewModelScope.launch {
+//             repository.getQuotes()
+//             Log.d("Log", "Fetching data")
+//         }
+//
+//
+//
+//
+//     }
 }
